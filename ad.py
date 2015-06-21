@@ -75,8 +75,6 @@ while True:
         # 12ビットの測定結果をADコンバータから受信
         value = 0
 
-        sys.stdout.write(str(value))
-
         for i in range(12):
             value <<= 1
             GPIO.output(spi_clk, True)
@@ -84,23 +82,21 @@ while True:
                 value |= 0x1
             GPIO.output(spi_clk, False)
 
-        # 測定結果を標準出力
-        if ch > 0:
-	    pass
-            # sys.stdout.write(" ")
-
         GPIO.output(spi_ss, True)
 	
 	if mem[ch] == -1:
 	    mem[ch] = value
 	    continue
 
-        # sys.stdout.write(str(mem[ch] - value))
+        # 測定結果を標準出力
+        if ch > 0:
+	    # pass
+            sys.stdout.write(" ")
+       	    sys.stdout.write(str(mem[ch] - value))
+
 
         if (mem[ch] - value > 1000):
-            reset_flag = 0
 	    sys.stdout.write(str(ii)+"\n")
-	    sys.stdout.write("test\n")
 	    ii += 1
 
             pygame.mixer.music.play( -1 )
