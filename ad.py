@@ -7,7 +7,7 @@ import pygame.mixer
 
 alarm_on_volt = 2.0
 alarm_music = "m.mp3"
-play_time = 120
+play_time = 5 
 play_volume = 100
 
 
@@ -42,6 +42,7 @@ mem = []
 for i in range(chs):
     mem.append(-1)
 
+reset_flag = 1
 ii = 0
 
 # 0.1秒インターバルの永久ループ
@@ -73,6 +74,9 @@ while True:
 
         # 12ビットの測定結果をADコンバータから受信
         value = 0
+
+        sys.stdout.write(str(value))
+
         for i in range(12):
             value <<= 1
             GPIO.output(spi_clk, True)
@@ -84,12 +88,28 @@ while True:
         if ch > 0:
 	    pass
             # sys.stdout.write(" ")
+
         GPIO.output(spi_ss, True)
-	if mem[ch] != -1:
-            # sys.stdout.write(str(mem[ch] - value))
-            if mem[ch] - value > 1000:
-		sys.stdout.write(str(ii)+"\n")
-		ii += 1
+	
+	if mem[ch] == -1:
+	    mem[ch] = value
+	    continue
+
+        # sys.stdout.write(str(mem[ch] - value))
+
+        if (mem[ch] - value > 1000):
+            reset_flag = 0
+	    sys.stdout.write(str(ii)+"\n")
+	    sys.stdout.write("test\n")
+	    ii += 1
+
+            pygame.mixer.music.play( -1 )
+            st = time.time()
+            while st + play_time > time.time():
+                time.sleep( 1 )
+
+	    pygame.mixer.music.stop()
+
 	mem[ch] = value
 
     # sys.stdout.write("\n")
