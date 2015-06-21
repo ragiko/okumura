@@ -3,6 +3,13 @@
 import sys
 import time
 import RPi.GPIO as GPIO
+import pygame.mixer
+
+alarm_on_volt = 2.0
+alarm_music = "m.mp3"
+play_time = 120
+play_volume = 100
+
 
 # GPIOの番号の定義。
 # 上記回路図では、Raspberry Pi上の特定のピンに接続するかのように説明しましたが、
@@ -22,12 +29,27 @@ GPIO.setup(spi_miso, GPIO.IN)
 GPIO.setup(spi_clk,  GPIO.OUT)
 GPIO.setup(spi_ss,   GPIO.OUT)
 
+
+pygame.mixer.init()
+pygame.mixer.music.load( alarm_music )
+pygame.mixer.music.set_volume( play_volume/100 )
+
+# pygame.mixer.music.play( -1 )
+
+# init channels
+chs = 1
+mem = []
+for i in range(chs):
+    mem.append(-1)
+
+ii = 0
+
 # 0.1秒インターバルの永久ループ
 while True:
     time.sleep(0.033)
 
     # 8チャンネル分のループ
-    for ch in range(8):
+    for ch in range(chs):
         GPIO.output(spi_ss,   False)
         GPIO.output(spi_clk,  False)
         GPIO.output(spi_mosi, False)
@@ -60,8 +82,14 @@ while True:
 
         # 測定結果を標準出力
         if ch > 0:
-            sys.stdout.write(" ")
+	    pass
+            # sys.stdout.write(" ")
         GPIO.output(spi_ss, True)
-        sys.stdout.write(str(value))
+	if mem[ch] != -1:
+            # sys.stdout.write(str(mem[ch] - value))
+            if mem[ch] - value > 1000:
+		sys.stdout.write(str(ii)+"\n")
+		ii += 1
+	mem[ch] = value
 
-    sys.stdout.write("\n")
+    # sys.stdout.write("\n")
