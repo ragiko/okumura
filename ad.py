@@ -37,7 +37,7 @@ pygame.mixer.music.set_volume( play_volume/100 )
 # pygame.mixer.music.play( -1 )
 
 # init channels
-chs = 1
+chs = 2
 mem = []
 for i in range(chs):
     mem.append(-1)
@@ -47,7 +47,7 @@ ii = 0
 
 # 0.1秒インターバルの永久ループ
 while True:
-    time.sleep(0.033)
+    time.sleep(0.01)
 
     # 8チャンネル分のループ
     for ch in range(chs):
@@ -83,19 +83,23 @@ while True:
             GPIO.output(spi_clk, False)
 
         GPIO.output(spi_ss, True)
+	print " "
 	
 	if mem[ch] == -1:
 	    mem[ch] = value
 	    continue
 
         # 測定結果を標準出力
+       	# sys.stdout.write(str(value))
+
+       	sys.stdout.write(str(mem[ch] - value))
         if ch > 0:
 	    # pass
             sys.stdout.write(" ")
-       	    sys.stdout.write(str(mem[ch] - value))
+       	    # sys.stdout.write(str(mem[ch] - value))
 
 
-        if (mem[ch] - value > 1000):
+        if (mem[ch] - value > 500):
 	    sys.stdout.write(str(ii)+"\n")
 	    ii += 1
 
@@ -106,6 +110,11 @@ while True:
 
 	    pygame.mixer.music.stop()
 
+	    for i in range(chs):
+	        mem[i] = -1
+
+	    break	
+
 	mem[ch] = value
 
-    # sys.stdout.write("\n")
+    sys.stdout.write("\n")
