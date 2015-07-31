@@ -6,8 +6,8 @@ import RPi.GPIO as GPIO
 import pygame.mixer
 
 alarm_on_volt = 2.0
-alarm_music = "m.mp3"
-play_time = 5 
+alarm_music = "drop.wav"
+play_time = 5 # 再生時間
 play_volume = 100
 
 
