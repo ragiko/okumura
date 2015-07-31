@@ -1,11 +1,11 @@
 # okumura
 for okumra (raspberry pi)
 
+# 導入手順
 - gitからソースを落とす
 ```
-git clone ~
+git clone https://github.com/ragiko/okumura.git
 ```
-
 - フォルダ内に音楽(~.mp3, ~.wav)を入れる
 - ad.pyの音楽ファイルの名前を変更 (現在はdrop.wavにしてある)
 
